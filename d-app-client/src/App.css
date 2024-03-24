@@ -1,0 +1,81 @@
+
+@import url('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap');
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+*{
+  margin: 0px;
+  padding: 0px;
+}
+
+.login-container{
+  height: 100vh;
+  width: 100vw;
+  
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.login-box{
+  height: 100vh;
+  width: 100vw;
+  display: flex;
+  
+}
+
+.fields-container{
+ 
+  flex: 0.5;
+  display: flex;
+  flex-direction: column;
+
+  gap: "10px";
+  padding: 20px 20px 20px 80px;
+ 
+}
+
+
+
+
+.fields-container h1{
+  margin-top: 70px;
+  font-family: "Poppins", sans-serif;
+  font-weight: lighter;
+  text-align: left;
+
+ 
+
+}
+
+
+.image-container {
+  flex: 0.5; 
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 40px 20px 40px 40px;
+ 
+  
+}
+
+.login-img {
+  
+  width: 100%; 
+  min-height: 92vh;
+  border-radius: 5px; 
+  
+}
+
+.helper-text{
+  font-family: "Poppins", sans-serif;
+  font-weight: 300;
+  padding: 0;
+  margin: 0;
+  font-size: 12px;
+  color: rgb(252, 109, 109);
+  margin-top: -10px;
+  
+
+}
