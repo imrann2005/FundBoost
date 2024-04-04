@@ -5,7 +5,7 @@ import VisibilityIcon from '@mui/icons-material/Visibility';
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 import ReactPhoneInput from 'react-phone-input-2'
 import { TextField } from '@mui/material';
-import image from '../assets/image.jpg'
+import image from '../assets/Rectangle 1083.png'
 
 import { IconButton, InputAdornment, Stepper, Step, StepLabel, Snackbar, Alert, MenuItem } from "@mui/material";
 import LoadingButton from '@mui/lab/LoadingButton';
@@ -92,6 +92,7 @@ const SignUp = () => {
                     required
                 />
                 <LoadingButton
+                    className=' poppins-bold'
                     loading={nextButtonLoading}
                     type="submit"
                     style={{ marginTop: "10px", backgroundColor: "#2C83EC", fontFamily: "Poppins" }}
@@ -155,9 +156,9 @@ const SignUp = () => {
                 >
                     NEXT
                 </LoadingButton>
-                <p className="font-roboto text-sm text-center">
+                <p className="font-roboto text-sm text-center poppins-regular">
                     Already A User?<b> <span onClick={() => {
-                        naviagte("/")
+                        naviagte("/login")
                     }} style={{
                         cursor: "pointer",
                     }} className="text-[#2C83EC]"> Sign In </span></b>

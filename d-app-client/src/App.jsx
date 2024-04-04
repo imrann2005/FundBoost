@@ -14,7 +14,8 @@ function App() {
   return (
     <FormProvider>
     <Routes>
-      <Route path='/' element={ <SignUp/> } />
+       <Route path='/' element={ <SignUp/> } />
+       <Route path='/login' element={ <Login/> } />☻
      
     </Routes>
   </FormProvider>

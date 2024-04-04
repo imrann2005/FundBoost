@@ -3,7 +3,8 @@ import { Button } from '@mui/material/';
 import TextField from '@mui/material/TextField';
 import { Snackbar } from '@mui/base';
 import LoadingButton from "@mui/lab/LoadingButton";
-import { getAuth,signInWithEmailAndPassword } from 'firebase/auth';
+import { getAuth, signInWithEmailAndPassword } from 'firebase/auth';
+import loginVector from '../assets/LoginVector2.png'
 
 import auth from '../Firebase/firebase-config';
 
@@ -29,7 +30,7 @@ const Login = () => {
 
     const loginUser = async () => {
         console.log(loginData);
-    
+
         if (!loginData.email || !loginData.password) {
             setSnackBarMessage("All Fields Are Required");
             setSnackBarType("warning");
@@ -42,7 +43,7 @@ const Login = () => {
                 const userCredential = await signInWithEmailAndPassword(auth, email[0], password[0]);
                 const user = userCredential.user;
                 console.log(user);
-    
+
                 setIsLoginLoading(false);
                 setSnackBarMessage("Login successful");
                 setSnackBarType("success");
@@ -60,7 +61,10 @@ const Login = () => {
 
     return (
         <>
-             <div className='flex flex-col items-start justify-end fixed bottom-0 left-0 p-8'>
+            <div id='header' className=' poppins-bold text-md my-4 mx-8'>
+                Company Logo
+            </div>
+            <div className='flex flex-col items-start justify-end fixed bottom-0 left-0 p-8'>
                 <Snackbar
                     open={snackbarVisiblity}
                     autoHideDuration={5000}
@@ -70,37 +74,53 @@ const Login = () => {
                     {snackbarMsg}
                 </Snackbar>
             </div>
-            <div className=' w-1/3 flex flex-col gap-2 mx-auto mt-8 border-stone-500 '>
+            <main className=' flex flex-row pl-8 pr-4 py-4 gap-4 items-center justify-evenly'>
+                <div className=' w-1/3 flex flex-col gap-4  mt-8 border-stone-500 '>
+                    <p className=' poppins-regular text-[#21343F] mb-4 text-xl tracking-wide'>
+                       <span className='poppins-medium bg-gradient-to-r from-blue-600 via-violet-500 to-indigo-400 inline-block text-transparent bg-clip-text'>Unlocking Dreams</span>  : Welcome To The Future of Crowdfunding!
+                    </p>
+                    <p className=' poppins-medium font-bold text-2xl mt-8 mb-4 '>
+                        Let's <span className=' text-[#2C83EC] poppins-medium bg-gradient-to-r from-blue-600 via-green-500 to-indigo-400 inline-block text-transparent bg-clip-text'>Sign You In !</span>
+                    </p>
 
-                <TextField
-                    required
-                    id="outlined-required"
-                    name='email'
-                    label="Email"
-                    onChange={(e) => {
-                        handleInputChange(e)
-                    }}
-                />
-                <TextField
-                    required
-                    id="outlined-password-input"
-                    name='password'
-                    label="Password"
-                    type="password"
-                    autoComplete="current-password"
-                    onChange={(e) => {
-                        handleInputChange(e)
-                    }}
+                    <TextField
+                        sx={{
+                            width: '100%'
+                        }}
+                        required
+                        id="outlined-required"
+                        name='email'
+                        label="Email"
+                        onChange={(e) => {
+                            handleInputChange(e)
+                        }}
+                    />
+                    <TextField
+                        required
+                        id="outlined-password-input"
+                        name='password'
+                        label="Password"
+                        type="password"
+                        autoComplete="current-password"
+                        onChange={(e) => {
+                            handleInputChange(e)
+                        }}
 
-                />
+                    />
 
-                <LoadingButton loading={isLoginLoading} type="submit" variant="contained" onClick={loginUser} disableElevation size="large">
+                    <LoadingButton className=' poppins-bold text-[#FFFFFF]' loading={isLoginLoading} type="submit" variant="contained" onClick={loginUser} disableElevation size="large">
 
-                    SIGN IN
+                        SIGN IN
 
-                </LoadingButton>
+                    </LoadingButton>
 
-            </div>
+                </div>
+                <div id='img-container' className=' w-1/3'>
+                    <img className='w-full'
+                        src={loginVector} alt='login vector' aria-label='Login vector'
+                    />
+                </div>
+            </main>
         </>
     )
 }
