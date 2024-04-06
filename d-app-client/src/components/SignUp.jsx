@@ -6,9 +6,12 @@ import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 import ReactPhoneInput from 'react-phone-input-2'
 import { TextField } from '@mui/material';
 import image from '../assets/Rectangle 1083.png'
-
+import Button from '@mui/material/Button';
 import { IconButton, InputAdornment, Stepper, Step, StepLabel, Snackbar, Alert, MenuItem } from "@mui/material";
 import LoadingButton from '@mui/lab/LoadingButton';
+import OTPInput from "otp-input-react";
+import auth from '../Firebase/firebase-config';
+import { RecaptchaVerifier, signInWithPhoneNumber } from "firebase/auth";
 
 const SignUp = () => {
     const naviagte = useNavigate();
@@ -168,6 +171,348 @@ const SignUp = () => {
         );
     };
 
+    const AddressAndContactDetailsForm = () => {
+        const { formValues, updateFormValue } = useFormContext();
+
+        const handleFormValues = (e) => {
+            const { name, value } = e.target;
+            updateFormValue(name, value);
+        };
+
+        const [snackBarVisibility, setSnackBarVisibility] = useState(false);
+        const [snackBarMessage, setSnackBarMessage] = useState("Test Message");
+        const [snackBarType, setSnackBarType] = useState("success");
+
+        const cities = ['City1', 'City2', 'City3']; // Add your cities here
+        const states = ['State1', 'State2', 'State3']; // Add your states here
+
+        const customSnackBar = () => (
+            <Snackbar open={snackBarVisibility} autoHideDuration={6000} onClose={() => { setSnackBarVisibility(false) }}>
+                <Alert onClose={() => { setSnackBarVisibility(false) }} severity={snackBarType} sx={{ width: '100%' }}>
+                    {snackBarMessage}
+                </Alert>
+            </Snackbar>
+        );
+
+        return (
+            <>
+                {customSnackBar()}
+                <TextField
+                    type="text"
+                    name="fullAddress"
+                    value={formValues.fullAddress || ''}
+                    onChange={handleFormValues}
+                    label="Flat, House No., Building, Company, Apartment"
+                    required
+                />
+                <TextField
+                    type="text"
+                    name="area"
+                    value={formValues.area || ''}
+                    onChange={handleFormValues}
+                    label="Area, Street, Sector, Village"
+                    required
+                />
+                <TextField
+                    type="text"
+                    name="landmark"
+                    value={formValues.landmark || ''}
+                    onChange={handleFormValues}
+                    label="Landmark (If Any)"
+                />
+                <div className="flex flex-row justify-normal gap-10">
+                    <TextField
+                        select
+                        name="city"
+                        value={formValues.city || ''}
+                        onChange={handleFormValues}
+                        label="City"
+                        required
+                    >
+                        {cities.map((city) => (
+                            <MenuItem key={city} value={city}>
+                                {city}
+                            </MenuItem>
+                        ))}
+                    </TextField>
+                    <TextField
+                        select
+                        name="state"
+                        value={formValues.state || ''}
+                        onChange={handleFormValues}
+                        label="State"
+                        required
+                    >
+                        {states.map((state) => (
+                            <MenuItem key={state} value={state}>
+                                {state}
+                            </MenuItem>
+                        ))}
+                    </TextField>
+                    <TextField
+                        type="text"
+                        name="zipCode"
+                        value={formValues.zipCode || ''}
+                        onChange={handleFormValues}
+                        label="Zip Code"
+                        required
+                    />
+                </div>
+                <ReactPhoneInput
+                    value={formValues.addressPhoneNumber || ''}
+                    onChange={(newValue) => updateFormValue("addressPhoneNumber", newValue)}
+                    component={TextField}
+                    label="Address Phone Number"
+                />
+                <Button
+                    type="submit"
+                    style={{
+                        backgroundColor: "#2C83EC",
+                        fontFamily: "Poppins",
+                    }}
+                    onClick={() => {
+                        const phoneRegex = /^(?:(?:\+|0{0,2})91(\s*[\-]\s*)?|[0]?)?[789]\d{9}$/;
+
+                        if (!formValues.fullAddress || !formValues.area || !formValues.zipCode || !formValues.state || !formValues.addressPhoneNumber) {
+                            setSnackBarMessage("All Fields Are Required");
+                            setSnackBarType("warning");
+                            setSnackBarVisibility(true);
+                        }
+
+                        else if (!formValues.addressPhoneNumber.match(phoneRegex)) {
+                            setSnackBarMessage("Enter Valid Address Phone Number");
+                            setSnackBarType("error");
+                            setSnackBarVisibility(true);
+                        }
+
+                        else {
+                            setStepNumber((prev) => prev + 1);
+                        }
+                    }}
+                    variant="contained"
+                    disableElevation
+                    size="large"
+                >
+                    NEXT
+                </Button>
+                <Button
+                    type="submit"
+                    style={{
+                        marginTop: "-15px",
+                        fontFamily: "Poppins",
+                    }}
+                    onClick={() => setStepNumber((prev) => prev - 1)}
+                    variant="text"
+                    sx={{
+                        margin: "auto"
+                    }}
+                    disableElevation
+                    size="small"
+                >
+                    Back
+                </Button>
+            </>
+        );
+    };
+
+    const VerifyPhoneNumber = () => {
+
+
+        const [snackBarVisibility, setSnackBarVisibility] = useState(false);
+        const [snackBarMessage, setSnackBarMessage] = useState("Test Message");
+        const [snackBarType, setSnackBarType] = useState("success");
+        const [verifyOtpLoading, setVerifyOtpLoading] = React.useState(false);
+        const [sendOtpLoading, setSendOtpLoading] = React.useState(false);
+
+
+        const customSnackBar = () => (
+            <Snackbar open={snackBarVisibility} autoHideDuration={6000} onClose={() => setSnackBarVisibility(false)}>
+                <Alert onClose={() => setSnackBarVisibility(false)} severity={snackBarType} sx={{ width: '100%' }}>
+                    {snackBarMessage}
+                </Alert>
+            </Snackbar>
+        );
+
+        const [OTP, setOTP] = useState("");
+        const { formValues } = useFormContext();
+
+        // Recaptcha
+        const authFirebase = auth;
+
+        const onSignInSubmit = () => {
+
+
+
+
+            const appVerifier = window.recaptchaVerifier;
+            const phoneNumber = `+${formValues.loginNumber}`;
+
+            signInWithPhoneNumber(authFirebase, phoneNumber, appVerifier)
+                .then((confirmationResult) => {
+
+                    setSendOtpLoading(false);
+
+                    // showing snackbar
+                    setSnackBarMessage(`OTP sent on ${phoneNumber}`);
+                    setSnackBarType("success");
+                    setSnackBarVisibility(true);
+                    // SMS sent. Prompt user to type the code from the message, then sign the
+                    // user in with confirmationResult.confirm(code).
+                    window.confirmationResult = confirmationResult;
+                    const recaptchaContainer = document.getElementById('recaptcha-container');
+
+                    recaptchaContainer.replaceChildren();
+                    // ...
+                }).catch((error) => {
+                    setSendOtpLoading(false);
+                    const recaptchaContainer = document.getElementById('recaptcha-container');
+
+                    // showing snackbar
+                    setSnackBarMessage(`Error Sending OTP, Try Again`);
+                    setSnackBarType("error");
+                    setSnackBarVisibility(true);
+
+                    recaptchaContainer.replaceChildren();
+                    console.log(error);
+                });
+        }
+
+        const onOtpVerify = async () => {
+
+            setVerifyOtpLoading(true);
+            window.confirmationResult.confirm(OTP).then((result) => {
+
+                setVerifyOtpLoading(false);
+
+                // User signed in successfully.
+
+
+                setSnackBarMessage(`Verification Successfull`);
+                setSnackBarType("success");
+                setSnackBarVisibility(true);
+                const config = {
+
+                    headers: {
+                        "content-type": "application/json"
+                    }
+
+                }
+
+                console.log(formValues);
+                const signUpUser = async () => {
+
+                    try {
+                        const response = await axios.post("http://localhost:4000/signup", formValues, config);
+                        setSnackBarMessage(`Signup Successfull`);
+                        setSnackBarType("success");
+                        setSnackBarVisibility(true);
+                    }
+                    catch (e) {
+                        console.log(e);
+                        setSnackBarMessage(e.response.data.msg);
+                        setSnackBarType("error");
+                        setSnackBarVisibility(true);
+                    }
+                }
+
+                signUpUser();
+
+
+
+                // ...
+            }).catch((error) => {
+                setVerifyOtpLoading(false);
+                console.log(error);
+                setSnackBarMessage(`Wrong OTP, Try Again`);
+                setSnackBarType("error");
+                setSnackBarVisibility(true);
+            });
+        }
+
+
+
+        return (
+            <div className="flex flex-col justify-center text-center">
+
+                {customSnackBar()}
+                <h1 className="text-2xl text-center m-4"> OTP will be sent to <b>+{formValues.loginNumber}</b> </h1>
+                <LoadingButton loading={sendOtpLoading} id="sign-in-button" onClick={() => {
+                    // setting loading to true
+                    setSendOtpLoading(true);
+                    const recaptchaContainer = document.getElementById('recaptcha-container');
+
+                    recaptchaContainer.replaceChildren();
+
+
+
+                    window.recaptchaVerifier = new RecaptchaVerifier(auth, recaptchaContainer, {
+
+                        'size': 'normal',  // Use 'normal' size for a visible reCAPTCHA
+                        'callback': (response) => {
+                            // Callback function when reCAPTCHA is successfully solved
+                            onSignInSubmit();
+
+                        
+
+                        },
+                        'expired-callback': () => {
+                            // Callback function when reCAPTCHA expires
+                            console.log("Captcha verification expired");
+
+                        }
+                    });
+
+                    // Render the reCAPTCHA explicitly
+                    window.recaptchaVerifier.render();
+
+
+
+                }}
+
+                    variant="outlined" size="large" sx={{ margin: "auto", fontFamily: 'Poppins' }}>
+                    Send Otp Via SMS
+                </LoadingButton>
+
+
+
+                <div style={{ textAlign: "center" }} className="my-4" id="recaptcha-container"></div>
+                <br />
+                <hr />
+                <div className="bg-slate-200 p-5 mt-10 mb-5 items-center flex flex-row justify-center rounded-md shadow-md">
+                    <OTPInput
+                        autoFocus
+                        value={OTP}
+                        onChange={(e) => setOTP(e)}
+                        OTPLength={6}
+                        otpType="number"
+                        disabled={false}
+                    />
+                </div>
+                <LoadingButton
+                    loading={verifyOtpLoading}
+                    onClick={onOtpVerify}
+                    size="large"
+                    disableElevation
+                    variant="contained"
+                    sx={{ fontFamily: "Poppins" }}
+                >
+                    Verify Otp & Complete Signup
+                </LoadingButton>
+                <Button
+                    type="submit"
+                    style={{ marginTop: "10px", fontFamily: "Poppins" }}
+                    onClick={() => setStepNumber((prev) => prev - 1)}
+                    variant="text"
+                    disableElevation
+                    sx={{ margin: "auto" }}
+                    size="small"
+                >
+                    Back
+                </Button>
+                <br />
+            </div>
+        );
+    };
     return (
         <div className="flex flex-row w-full h-full">
             {/* form container */}
