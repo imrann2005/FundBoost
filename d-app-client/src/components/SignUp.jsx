@@ -12,6 +12,7 @@ import LoadingButton from '@mui/lab/LoadingButton';
 import OTPInput from "otp-input-react";
 import auth from '../Firebase/firebase-config';
 import { RecaptchaVerifier, signInWithPhoneNumber } from "firebase/auth";
+import axios from 'axios';
 
 const SignUp = () => {
     const naviagte = useNavigate();
@@ -44,9 +45,9 @@ const SignUp = () => {
             </Snackbar>
         );
         return (
-            <> 
+            <>
                 {customSnackBar()}
-                <TextField 
+                <TextField
                     type="text"
                     value={formValues.fullName || ''}
                     name="fullName"
@@ -166,8 +167,8 @@ const SignUp = () => {
                         cursor: "pointer",
                     }} className="text-[#2C83EC]"> Sign In </span></b>
                 </p>
-          
-           </>
+
+            </>
         );
     };
 
@@ -288,7 +289,36 @@ const SignUp = () => {
                         else {
                             setStepNumber((prev) => prev + 1);
                         }
-                    }}
+
+
+
+                        const config = {
+                            headers: {
+                                "content-type": "application/json"
+                            }
+                        }
+
+                        const test = async () => {
+
+                            try {
+                                const response = await axios.post("http://localhost:4000/signup", formValues, config);
+                                setSnackBarMessage(`Signup Successfull`);
+                                setSnackBarType("success");
+                                setSnackBarVisibility(true);
+                            }
+                            catch (e) {
+                                console.log(e);
+                                // setSnackBarMessage(e.response.data.msg);
+                                // setSnackBarType("error");
+                                // setSnackBarVisibility(true);
+                            }
+                        }
+                        test();
+                    }
+
+
+                    }
+
                     variant="contained"
                     disableElevation
                     size="large"
@@ -452,7 +482,7 @@ const SignUp = () => {
                             // Callback function when reCAPTCHA is successfully solved
                             onSignInSubmit();
 
-                        
+
 
                         },
                         'expired-callback': () => {
@@ -518,11 +548,11 @@ const SignUp = () => {
             {/* form container */}
             <div className="p-5 sm:p-16 sm:basis-1/2 flex-col ">
                 <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-4xl mb-4 tracking-widest font-poppins">
-                     <span className=" font-medium text-[#2C83EC] block">Unlocking Dreams:
-                     </span> 
-                     <span className=' font-light my-2'>
-                     Welcome to the Future of Crowdfunding 
-                     </span>
+                    <span className=" font-medium text-[#2C83EC] block">Unlocking Dreams:
+                    </span>
+                    <span className=' font-light my-2'>
+                        Welcome to the Future of Crowdfunding
+                    </span>
                 </h1>
                 <div className="flex flex-col mt-10  gap-4 sm:mt-18 sm:gap-6">
                     <Stepper activeStep={stepNumber} alternativeLabel className=' mb-4'>
