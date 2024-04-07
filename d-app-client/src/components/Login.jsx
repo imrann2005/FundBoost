@@ -4,7 +4,8 @@ import TextField from '@mui/material/TextField';
 import { Snackbar } from '@mui/base';
 import LoadingButton from "@mui/lab/LoadingButton";
 import { getAuth, signInWithEmailAndPassword } from 'firebase/auth';
-import loginVector from '../assets/LoginVector2.png'
+import loginVector from '../assets/LoginVector2.png';
+import axios from 'axios';
 
 import auth from '../Firebase/firebase-config';
 
@@ -23,7 +24,7 @@ const Login = () => {
         setLoginData((prevData) => {
             return {
                 ...prevData,
-                [e.target.name]: [e.target.value],
+                [e.target.name]: e.target.value,
             }
         })
     }
@@ -37,15 +38,21 @@ const Login = () => {
             setSnackBarVisibility(true);
         } else {
             setIsLoginLoading(true);
+            const config = {
+                headers : {
+                    "content-type" : "application/json",
+                }
+            }
             try {
                 const { email, password } = loginData;
-                const auth = getAuth();
-                const userCredential = await signInWithEmailAndPassword(auth, email[0], password[0]);
-                const user = userCredential.user;
-                console.log(user);
-
+                console.log(`${email} and ${password}`);
+                //const auth = getAuth();
+                const userCredential = await axios.post("http://localhost:4000/signIn",{email,password},config);
+                //const user = userCredential.user;
+               // console.log(user);
+                console.log(userCredential);
                 setIsLoginLoading(false);
-                setSnackBarMessage("Login successful");
+                setSnackBarMessage(userCredential.data.msg);
                 setSnackBarType("success");
                 setSnackBarVisibility(true);
             } catch (error) {
@@ -108,7 +115,7 @@ const Login = () => {
 
                     />
 
-                    <LoadingButton className=' poppins-bold text-[#FFFFFF]' loading={isLoginLoading} type="submit" variant="contained" onClick={loginUser} disableElevation size="large">
+                    <LoadingButton className=' poppins-bold text-[#FFFFFF]' loading={isLoginLoading} type="submit" variant="contained" onClick={loginUser} disableElevation size="large" >
 
                         SIGN IN
 
