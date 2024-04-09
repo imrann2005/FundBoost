@@ -30,6 +30,8 @@ const SignUp = () => {
         const [snackBarType, setSnackBarType] = useState("success");
         const [nextButtonLoading, setNextButtonLoading] = useState(false);
 
+        //using formcontect for updating the form values
+
         const { formValues, updateFormValue } = useFormContext();
 
         const handleFormValues = (e) => {
@@ -37,6 +39,7 @@ const SignUp = () => {
             updateFormValue(name, value);
         };
 
+            //Snackbar for showing updates
         const customSnackBar = () => (
             <Snackbar open={snackBarVisibility} autoHideDuration={6000} onClose={() => setSnackBarVisibility(false)}>
                 <Alert onClose={() => setSnackBarVisibility(false)} severity={snackBarType} sx={{ width: '100%' }}>
@@ -66,8 +69,8 @@ const SignUp = () => {
                 />
                 <TextField
                     type="email"
-                    value={formValues.emailAddress || ''}
-                    name="emailAddress"
+                    value={formValues.email || ''}
+                    name="email"
                     label="Email Address"
                     onChange={handleFormValues}
                     required
@@ -104,7 +107,7 @@ const SignUp = () => {
                         const emailRegex = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
                         const passRegex = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$/;
                         const phoneRegex = /^(?:(?:\+|0{0,2})91(\s*[\-]\s*)?|[0]?)?[789]\d{9}$/;
-                        if (!formValues.fullName || !formValues.emailAddress || !formValues.gender || !formValues.password || !formValues.loginNumber) {
+                        if (!formValues.fullName || !formValues.email || !formValues.gender || !formValues.password || !formValues.loginNumber) {
                             setSnackBarMessage("All Fields Are Required");
                             setSnackBarType("warning");
                             setSnackBarVisibility(true);
@@ -112,7 +115,7 @@ const SignUp = () => {
                             setSnackBarMessage("Weak Password : Minimum eight characters, at least one letter, one number and one special character is Required");
                             setSnackBarType("error");
                             setSnackBarVisibility(true);
-                        } else if (!formValues.emailAddress.match(emailRegex)) {
+                        } else if (!formValues.email.match(emailRegex)) {
                             setSnackBarMessage("Enter Valid Email");
                             setSnackBarType("error");
                             setSnackBarVisibility(true);
@@ -298,22 +301,23 @@ const SignUp = () => {
                             }
                         }
 
-                        const test = async () => {
+                        // const test = async () => {
 
-                            try {
-                                const response = await axios.post("http://localhost:4000/signup", formValues, config);
-                                setSnackBarMessage(`Signup Successfull`);
-                                setSnackBarType("success");
-                                setSnackBarVisibility(true);
-                            }
-                            catch (e) {
-                                console.log(e);
-                                // setSnackBarMessage(e.response.data.msg);
-                                // setSnackBarType("error");
-                                // setSnackBarVisibility(true);
-                            }
-                        }
-                        test();
+                        //     try {
+                        //         console.log(formValues);
+                        //         const response = await axios.post("http://localhost:4000/signup", formValues, config);
+                        //         setSnackBarMessage(`Signup Successfull`);
+                        //         setSnackBarType("success");
+                        //         setSnackBarVisibility(true);
+                        //     }
+                        //     catch (e) {
+                        //         console.log(e);
+                        //         setSnackBarMessage(e.response.data.msg);
+                        //         setSnackBarType("error");
+                        //         setSnackBarVisibility(true);
+                        //     }
+                        // }
+                        // test();
                     }
 
 

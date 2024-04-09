@@ -3,6 +3,9 @@ import cors from 'cors'
 import mongoose from 'mongoose'
 
 import router from '../server/routes.js';
+import 'dotenv/config'
+
+const mongodbConnectStr = process.env.MONGO_URI
 
 const PORT = 4000;
 
@@ -10,7 +13,7 @@ const app = express();
 
 async function connect() {
     try {
-    const result = await mongoose.connect('mongodb+srv://imwebdev01:shamshad05@cluster0.q1h1cbg.mongodb.net/?retryWrites=true&w=majority');
+    const result = await mongoose.connect(mongodbConnectStr);
     console.log(`Mongo db conected`);
         //console.log(result);
 } catch (error) {
