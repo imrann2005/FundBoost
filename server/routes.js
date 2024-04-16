@@ -4,6 +4,7 @@ import signupController from './controllers/signupController.js';
 import { getSingleUser } from './controllers/testController.js';
 import test from './controllers/testController.js';
 import loginController from './controllers/loginController.js';
+import { deleteTestUser } from './controllers/testController.js';
 //Setup the router
 const router = express.Router();
 
@@ -15,4 +16,8 @@ router.get("/:id",getSingleUser);
 router.post('/signup',signupController);
 router.post('/signin',loginController);
 
+
+//delete test data route
+
+router.delete('/api/delete/:id',deleteTestUser);
 export default router;

@@ -38,4 +38,29 @@ export const getSingleUser = async (req, res) => {
 
 
 }
+
+
+export const deleteTestUser = async(req,res) => { 
+
+    console.log(req.params);
+    const {id} = req.params;
+    
+    try {
+        const user = await userModel.findOne({_id : id});
+        const {_id} = user;
+        if(_id){
+            
+            const userDataDeleted = await userModel.deleteOne({_id : _id});
+            console.log(userDataDeleted);
+            res.status(200).json({msg : "User Deleted!"});
+        }
+        else{
+            res.status(404).json({msg : "User not found!!"});
+        }
+    } catch (error) {
+        res.status(500).json({msg : "Internal server error "});
+    }
+    
+
+ }
 export default test;

@@ -39,7 +39,7 @@ const SignUp = () => {
             updateFormValue(name, value);
         };
 
-            //Snackbar for showing updates
+        //Snackbar for showing updates
         const customSnackBar = () => (
             <Snackbar open={snackBarVisibility} autoHideDuration={6000} onClose={() => setSnackBarVisibility(false)}>
                 <Alert onClose={() => setSnackBarVisibility(false)} severity={snackBarType} sx={{ width: '100%' }}>
@@ -551,12 +551,30 @@ const SignUp = () => {
         <div className="flex flex-row w-full h-full">
             {/* form container */}
             <div className="p-5 sm:p-16 sm:basis-1/2 flex-col ">
-                <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-4xl mb-4 tracking-widest font-poppins">
-                    <span className=" font-medium text-[#2C83EC] block">Unlocking Dreams:
-                    </span>
-                    <span className=' font-light my-2'>
-                        Welcome to the Future of Crowdfunding
-                    </span>
+                <h1 className="mx-auto text-2xl sm:text-3xl md:text-4xl lg:text-4xl mb-4 tracking-widest font-poppins">
+                    {
+                        stepNumber === 0 ? <><span className=" font-medium text-[#2C83EC] mr-2">Create
+                        </span>
+                            <span className=' font-regular my-2'>
+                                Account
+                            </span>
+                            </>
+                            :
+                            stepNumber === 1 ? <><span className=" font-medium text-[#2C83EC] block">Just One
+                            </span>
+                                <span className=' font-light my-2'>
+                                    Step To Go!
+                                </span>
+                                </>
+                                :
+                                stepNumber === 2 && <><span className=" font-medium text-[#2C83EC] block">Final
+                                </span>
+                                    <span className=' font-light my-2'>
+                                        Lap Ahead, Verify your Mobile Number!
+                                    </span>
+                                    </>
+                       
+                    }
                 </h1>
                 <div className="flex flex-col mt-10  gap-4 sm:mt-18 sm:gap-6">
                     <Stepper activeStep={stepNumber} alternativeLabel className=' mb-4'>
