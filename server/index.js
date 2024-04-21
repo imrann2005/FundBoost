@@ -13,12 +13,12 @@ const app = express();
 
 async function connect() {
     try {
-    const result = await mongoose.connect(mongodbConnectStr);
-    console.log(`Mongo db conected`);
+        const result = await mongoose.connect(mongodbConnectStr);
+        console.log(`Mongo db conected`);
         //console.log(result);
-} catch (error) {
-    console.log(error);
-}
+    } catch (error) {
+        console.log(error);
+    }
 }
 
 connect();
@@ -30,11 +30,11 @@ connect();
 app.use(cors({ origin: 'http://localhost:5173' }));
 app.use(express.json());
 
-app.use('/',router);
+app.use('/', router);
 
-app.get("/",(req,res)=>{
-    res.status(200).json({msg : 'Getting page'});
+app.get("/", (req, res) => {
+    res.status(200).json({ msg: 'Getting page' });
 })
-app.listen(PORT,()=>{
+app.listen(PORT, () => {
     console.log(`Server started on port : ${PORT}`);
 })
