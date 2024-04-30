@@ -40,7 +40,7 @@ const SignUp = () => {
         };
 
         //Snackbar for showing updates
-        const customSnackBar = () => (
+         const customSnackBar = () => (
             <Snackbar open={snackBarVisibility} autoHideDuration={6000} onClose={() => setSnackBarVisibility(false)}>
                 <Alert onClose={() => setSnackBarVisibility(false)} severity={snackBarType} sx={{ width: '100%' }}>
                     {snackBarMessage}
