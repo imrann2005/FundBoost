@@ -4,9 +4,11 @@ import Navbar from './Navbar';
 import { Snackbar, Alert, Card, CardActions, Typography, CardMedia, CardContent,Button } from '@mui/material';
 import xx from '../assets/carouselPic.png';
 import yy from '../assets/cardImg.png';
+import NewCampaign from './NewCampaign';
 
 const Home = () => {
   const [address, setAddress] = useState("");
+  const [open,setIsOpen] = useState(false);
   const [snackBarVisibility, setSnackBarVisibility] = useState(false);
   const [snackBarMessage, setSnackBarMessage] = useState("Test Message");
   const [snackBarType, setSnackBarType] = useState("success");
@@ -95,17 +97,24 @@ const Home = () => {
       </Alert>
     </Snackbar>
   );
+  const handleOpen = () => { 
+    setIsOpen(true);
+   }
+   const handleClose = () => { 
+    setIsOpen(false);
+   }
   return (
-    <div classNameName='h-[100vh]'>
+    <div className='h-[100vh]'>
       {customSnackBar()}
-      <Navbar onClick={connectToWallet} />
-      <main id='main-section' classNameName=' h-25% bg-[#f3f3f3] flex items-center'>
-        <img className='mx-auto h-[40%] my-2' src={xx} />
+      <Navbar onClick={connectToWallet} onOpen={handleOpen}/>
+      <NewCampaign open={open} onClose={handleClose}/>
+      <main id='main-section' className='  bg-[#f3f3f3] flex flex-col py-4 px-2'>
+        <img className='mx-auto h-[10%] my-2' src={xx} />
         <section className=' flex gap-3 justify-center flex-wrap'>
           {
             data.map((d) => {
               return (
-                <Card key={d.id} sx={{ maxWidth: 345 }}>
+                <Card key={d.id} sx={{ maxWidth: 345, }}>
                   <CardMedia
                     sx={{ height: 200 }}
                     image={yy}
