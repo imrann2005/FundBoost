@@ -8,10 +8,7 @@ import { create as IPFSHTTPClient } from 'ipfs-http-client';
 import { BrowserProvider,ethers } from 'ethers';
 import createNewFundraising from '../../../contract/artifacts/contracts/Campaign.sol/createNewFundraising.json'
 
-const deployedAddress = '0x0591A7C6484e68f28D08b23aaA67cD43AB20b82F';
-
-
-
+export const deployedAddress = '0x0591A7C6484e68f28D08b23aaA67cD43AB20b82F';
 
 function NewCampaign({ open, children, onClose }) {
   const dialog = useRef();

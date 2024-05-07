@@ -4,11 +4,14 @@ import { MenuItem, IconButton } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
 import WalletIcon from '@mui/icons-material/Wallet';
 import AddBusinessIcon from '@mui/icons-material/AddBusiness';
+
+
 const Navbar = ({onClick,onOpen}) => {
 const [search, setSearch] = useState("All Categories");
 function handleChange(e) {
     setSearch(e.target.value);
   }
+  //filterAlt,accountbox,paid icon,event icon
   return (
     <nav className=' h-[12.5%] w-full bg-[#2181F8] px-4 py-3 flex items-center justify-around'>
     <p className=' poppins-semibold text-[#FFFFFF]'>Company Logo</p>

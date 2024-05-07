@@ -1,17 +1,97 @@
 import React, { useEffect, useState } from 'react';
 import { ethers, formatEther } from 'ethers';
 import Navbar from './Navbar';
-import { Snackbar, Alert, Card, CardActions, Typography, CardMedia, CardContent,Button } from '@mui/material';
+import { Snackbar, Alert, Card, CardActions, Typography, CardMedia, CardContent, Button } from '@mui/material';
 import xx from '../assets/carouselPic.png';
 import yy from '../assets/cardImg.png';
 import NewCampaign from './NewCampaign';
-
+import { deployedAddress } from './NewCampaign';
+import createNewFundraising from '../../../contract/artifacts/contracts/Campaign.sol/createNewFundraising.json'
 const Home = () => {
-  const [address, setAddress] = useState("");
-  const [open,setIsOpen] = useState(false);
+  const [fetching, setFetching] = useState(false);
+  const [open, setIsOpen] = useState(false);
   const [snackBarVisibility, setSnackBarVisibility] = useState(false);
   const [snackBarMessage, setSnackBarMessage] = useState("Test Message");
   const [snackBarType, setSnackBarType] = useState("success");
+
+  const [fetchedData,setFetchedData] = useState();
+  // const main = async() => { 
+  //      const provider = new ethers.JsonRpcProvider(
+  //       'https://rpc.cardona.zkevm-rpc.com'
+  //   );
+
+  //   const contract = new ethers.Contract(
+  //     deployedAddress,
+  //     createNewFundraising.abi,
+  //     provider
+  //   );
+
+  //   const getDeployedCampaign = contract.filters.campaignCreated();
+
+  //   try {
+  //     const latestBlockNumber = await provider.getBlockNumber();
+
+  //     // Specify a block range for querying logs (e.g., last 100 blocks)
+  //     const fromBlock = Math.max(0, latestBlockNumber - 60000); // Adjust the block range as needed
+  //     const toBlock = latestBlockNumber - 50000;
+  //     console.log(`range of block number : ${fromBlock} to ${toBlock}`);
+  //     let events = await contract.queryFilter(getDeployedCampaign,fromBlock,toBlock);
+  //     let event = events.reverse();
+  //     console.log(event);
+  //   } catch (error) {
+  //     console.log(error);
+  //   }
+
+  //  }
+  //  main();
+
+  useEffect(() => {
+
+    const fetchData = async () => {
+      setFetching(true);
+      const provider = new ethers.JsonRpcProvider('https://rpc.cardona.zkevm-rpc.com');
+
+      const contract = new ethers.Contract(
+        deployedAddress,
+        createNewFundraising.abi,
+        provider,
+      );
+
+      const getAllProjects = contract.filters.campaignCreated();
+
+      try {
+
+        //console.log(`range of block number : ${fromBlock} to ${toBlock}`);
+        //Hardcoded block value after taking block number from transaction summary
+        const allData = await contract.queryFilter(getAllProjects, 2791895, 2791897);
+        let event = allData.reverse();
+
+        const allCampaignData = event.map((e) => {
+          return {
+            id : Math.random()*1000,
+            title: e.args.title,
+            image: e.args.imgURI,
+            owner: e.args.owner,
+            timeStamp: parseInt(e.args.timestamp),
+            amount: `${formatEther(e.args.requiredFund)} ETH`,
+            address: e.args.campaignAddress,
+            category : e.args.category,
+          }
+        })
+
+        console.log(allCampaignData);
+        setFetchedData(allCampaignData);
+        setFetching(false);
+      } catch (error) {
+        console.log(error);
+        setFetching(false);
+      }
+
+
+    }
+    fetchData();
+
+  }, []);
 
   const connectToWallet = async () => {
     try {
@@ -24,7 +104,7 @@ const Home = () => {
         const Address = await signer.getAddress();
         const Balance = await provider.getBalance(`${Address}`);
         const val = formatEther(Balance);
-        setAddress(Address);
+        //setAddress(Address);
         setSnackBarType("success");
         setSnackBarMessage("Wallet Connected Successfully");
         setSnackBarVisibility(true);
@@ -38,6 +118,9 @@ const Home = () => {
       }
     } catch (error) {
       console.error("Error connecting to wallet:", error);
+        setSnackBarType("warning");
+        setSnackBarMessage(error.message);
+        setSnackBarVisibility(true);
     }
   };
   const data = [
@@ -97,22 +180,24 @@ const Home = () => {
       </Alert>
     </Snackbar>
   );
-  const handleOpen = () => { 
+  const handleOpen = () => {
     setIsOpen(true);
-   }
-   const handleClose = () => { 
+  }
+  const handleClose = () => {
     setIsOpen(false);
-   }
+  }
+
+
   return (
     <div className='h-[100vh]'>
       {customSnackBar()}
-      <Navbar onClick={connectToWallet} onOpen={handleOpen}/>
-      <NewCampaign open={open} onClose={handleClose}/>
+      <Navbar onClick={connectToWallet} onOpen={handleOpen} />
+      <NewCampaign open={open} onClose={handleClose} />
       <main id='main-section' className='  bg-[#f3f3f3] flex flex-col py-4 px-2'>
         <img className='mx-auto h-[10%] my-2' src={xx} />
         <section className=' flex gap-3 justify-center flex-wrap'>
           {
-            data.map((d) => {
+            fetchedData && fetchedData.map((d) => {
               return (
                 <Card key={d.id} sx={{ maxWidth: 345, }}>
                   <CardMedia
@@ -125,12 +210,18 @@ const Home = () => {
                       {d.title}
                     </Typography>
                     <Typography variant="body2" color="text.secondary">
-                     {d.content}
+                     
+                    Owner : {d.owner }
+                    </Typography>
+                    <Typography variant="body2" color="text.secondary">
+                     
+                    Required Fund :  {d.amount }
+                    
                     </Typography>
                   </CardContent>
                   <CardActions>
-                    <Button size="small">Share</Button>
-                    <Button size="small">Learn More</Button>
+                    {/* <Button size="small">Share</Button> */}
+                    <Button size="medium">Learn More</Button>
                   </CardActions>
                 </Card>
               )

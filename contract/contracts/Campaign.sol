@@ -26,7 +26,7 @@ contract createNewFundraising {
         string memory category,
         string memory descriptionURI
     )public {
-        Campaign newCampaign = new Campaign(campaignTitle,requiredCampaignFund,imgURI,descriptionURI);
+        Campaign newCampaign = new Campaign(campaignTitle,requiredCampaignFund,imgURI,descriptionURI, msg.sender);
 
         deployedCampaigns.push(address(newCampaign));
 
@@ -50,13 +50,14 @@ contract Campaign{
     string memory campaignTitle, 
     uint requiredCampaignFund, 
     string memory imgURI,
-    string memory descriptionURI)
+    string memory descriptionURI,
+    address campaignOwner)
     {
         title = campaignTitle;
         requiredFund = requiredCampaignFund;
         image = imgURI;
         startupDescription = descriptionURI;
-        owner = payable(msg.sender);
+        owner = payable(campaignOwner);
     }
 
     function invest() public payable {
