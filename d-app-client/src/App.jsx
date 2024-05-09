@@ -6,9 +6,10 @@ import './App.css'
 import { FormProvider } from './components/contexts/FormContext';
 import { Routes, Route } from "react-router-dom";
 import Home from './components/Home';
+import CampaignDetaiils from './components/CampaignDetaiils';
 function App() {
 
-  const [swi,setSwi] = useState(false);
+  // const [swi,setSwi] = useState(false);
 
 
 
@@ -18,7 +19,7 @@ function App() {
        <Route path='/' element={ <SignUp/> } />
        <Route path='/login' element={ <Login/> } />
        <Route path='/home' element={ <Home/> } />
-
+        <Route path='/home/campaign/:id' element={<CampaignDetaiils />}/>
      
     </Routes>
   </FormProvider>

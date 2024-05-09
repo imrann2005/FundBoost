@@ -6,7 +6,8 @@ import xx from '../assets/carouselPic.png';
 import yy from '../assets/cardImg.png';
 import NewCampaign from './NewCampaign';
 import { deployedAddress } from './NewCampaign';
-import createNewFundraising from '../../../contract/artifacts/contracts/Campaign.sol/createNewFundraising.json'
+import createNewFundraising from '../../../contract/artifacts/contracts/Campaign.sol/createNewFundraising.json';
+import {useNavigate} from 'react-router-dom'
 const Home = () => {
   const [fetching, setFetching] = useState(false);
   const [open, setIsOpen] = useState(false);
@@ -15,6 +16,8 @@ const Home = () => {
   const [snackBarType, setSnackBarType] = useState("success");
 
   const [fetchedData,setFetchedData] = useState();
+
+  const navigate = useNavigate();
   // const main = async() => { 
   //      const provider = new ethers.JsonRpcProvider(
   //       'https://rpc.cardona.zkevm-rpc.com'
@@ -187,7 +190,9 @@ const Home = () => {
     setIsOpen(false);
   }
 
-
+const handleClick = (d,open,handleOpen,handleClose) => { 
+  navigate(`/home/campaign/${d.id}`,{state:d,open : open,handleOpen:handleOpen,handleClose:handleClose});
+ }
   return (
     <div className='h-[100vh]'>
       {customSnackBar()}
@@ -197,7 +202,7 @@ const Home = () => {
         <img className='mx-auto h-[10%] my-2' src={xx} />
         <section className=' flex gap-3 justify-center flex-wrap'>
           {
-            fetchedData && fetchedData.map((d) => {
+            data.map((d) => {
               return (
                 <Card key={d.id} sx={{ maxWidth: 345, }}>
                   <CardMedia
@@ -218,10 +223,16 @@ const Home = () => {
                     Required Fund :  {d.amount }
                     
                     </Typography>
+                    <Typography variant="body2" color="text.secondary">
+                     
+                     {d.content }
+                    
+                    </Typography>
                   </CardContent>
                   <CardActions>
                     {/* <Button size="small">Share</Button> */}
-                    <Button size="medium">Learn More</Button>
+                    <Button size="medium" onClick={() => handleClick(d,open,handleOpen,handleClose)}>Learn More</Button>
+
                   </CardActions>
                 </Card>
               )
