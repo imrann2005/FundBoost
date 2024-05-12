@@ -6,7 +6,7 @@ import WalletIcon from '@mui/icons-material/Wallet';
 import AddBusinessIcon from '@mui/icons-material/AddBusiness';
 
 
-const Navbar = ({ onClick, onOpen }) => {
+const Navbar = ({ onClick, onOpen,display }) => {
   const [search, setSearch] = useState("All Categories");
   function handleChange(e) {
     setSearch(e.target.value);
@@ -14,11 +14,12 @@ const Navbar = ({ onClick, onOpen }) => {
   //filterAlt,accountbox,paid icon,event icon
   return (
     <nav style={{
-      position : "fixed",
+      position : 'fixed',
       top : '0',
-      opacity : '95%'
-    }} className=' h-[12.5%] w-full bg-[#2181F8] px-4 py-3 flex items-center justify-around hover:shadow-md'>
-      <p className=' poppins-semibold text-[#FFFFFF]'>Company Logo</p>
+      opacity : '95%',
+      
+    }} className=' h-[12.5%] w-full bg-[#2181F8] px-4 py-8 flex items-center justify-around hover:shadow-md'>
+      <p className=' poppins-semibold text-[#FFFFFF] hover:text-md hover:cursor-pointer'>FundBoost 🚀</p>
       <div id='nav-search' className=' w-[70%] bg-[#f3f3f3] h-8 rounded-md flex items-center justify-around'>
         <Select
           labelId="demo-simple-select-label"

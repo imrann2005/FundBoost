@@ -23,7 +23,7 @@ module.exports = {
   networks : {
     hardhat : {},
     polygon : {
-      url : process.env.PUBLIC_RPC_URL,
+      url : process.env.PUBLIC_AMOY_RPC_URL,
       accounts : [privateKey],
 
     }

@@ -2,12 +2,13 @@ import React, { useEffect, useState } from 'react';
 import { ethers, formatEther } from 'ethers';
 import Navbar from './Navbar';
 import { Snackbar, Alert, Card, CardActions, Typography, CardMedia, CardContent, Button } from '@mui/material';
-import xx from '../assets/carouselPic.png';
+import xx from '../assets/newLogo.png';
 import yy from '../assets/cardImg.png';
 import NewCampaign from './NewCampaign';
 import { deployedAddress } from './NewCampaign';
 import createNewFundraising from '../../../contract/artifacts/contracts/Campaign.sol/createNewFundraising.json';
-import {useNavigate} from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
+import VerifiedIcon from '@mui/icons-material/Verified';
 const Home = () => {
   const [fetching, setFetching] = useState(false);
   const [open, setIsOpen] = useState(false);
@@ -15,7 +16,7 @@ const Home = () => {
   const [snackBarMessage, setSnackBarMessage] = useState("Test Message");
   const [snackBarType, setSnackBarType] = useState("success");
 
-  const [fetchedData,setFetchedData] = useState();
+  const [fetchedData, setFetchedData] = useState();
 
   const navigate = useNavigate();
   // const main = async() => { 
@@ -52,7 +53,10 @@ const Home = () => {
 
     const fetchData = async () => {
       setFetching(true);
-      const provider = new ethers.JsonRpcProvider('https://rpc.cardona.zkevm-rpc.com');
+      setSnackBarType('info');
+      setSnackBarMessage('Fetching Data Please Wait..');
+      setSnackBarVisibility(true);
+      const provider = new ethers.JsonRpcProvider('https://rpc-amoy.polygon.technology');
 
       const contract = new ethers.Contract(
         deployedAddress,
@@ -66,28 +70,34 @@ const Home = () => {
 
         //console.log(`range of block number : ${fromBlock} to ${toBlock}`);
         //Hardcoded block value after taking block number from transaction summary
-        const allData = await contract.queryFilter(getAllProjects, 2791895, 2791897);
+        const allData = await contract.queryFilter(getAllProjects);
         let event = allData.reverse();
 
         const allCampaignData = event.map((e) => {
           return {
-            id : Math.random()*1000,
+            id: Math.random() * 1000,
             title: e.args.title,
             image: e.args.imgURI,
             owner: e.args.owner,
-            timeStamp: parseInt(e.args.timestamp),
+            timeStamp: new Date(parseInt(e.args.timestamp) * 1000).toLocaleString(),
             amount: `${formatEther(e.args.requiredFund)} ETH`,
             address: e.args.campaignAddress,
-            category : e.args.category,
+            category: e.args.category,
           }
         })
 
-        console.log(allCampaignData);
+        //console.log(allCampaignData);
         setFetchedData(allCampaignData);
         setFetching(false);
+        setSnackBarType('success');
+        setSnackBarMessage('Projects Fetched Successfully');
+        setSnackBarVisibility(true);
       } catch (error) {
         console.log(error);
         setFetching(false);
+        setSnackBarType('error');
+        setSnackBarMessage('Error Fetching Data');
+        setSnackBarVisibility(true);
       }
 
 
@@ -121,9 +131,9 @@ const Home = () => {
       }
     } catch (error) {
       console.error("Error connecting to wallet:", error);
-        setSnackBarType("warning");
-        setSnackBarMessage(error.message);
-        setSnackBarVisibility(true);
+      setSnackBarType("warning");
+      setSnackBarMessage(error.message);
+      setSnackBarVisibility(true);
     }
   };
   const data = [
@@ -190,48 +200,51 @@ const Home = () => {
     setIsOpen(false);
   }
 
-const handleClick = (d,open,handleOpen,handleClose) => { 
-  navigate(`/home/campaign/${d.id}`,{state:d,open : open,handleOpen:handleOpen,handleClose:handleClose});
- }
+  const handleClick = (d, open, handleOpen, handleClose) => {
+    navigate(`/home/campaign/${d.id}`, { state: d, open: open, handleOpen: handleOpen, handleClose: handleClose });
+  }
   return (
     <div className='h-[100vh]'>
       {customSnackBar()}
-      <Navbar onClick={connectToWallet} onOpen={handleOpen} />
+      <Navbar onClick={connectToWallet} onOpen={handleOpen} display={'sticky'} />
       <NewCampaign open={open} onClose={handleClose} />
-      <main id='main-section' className='  bg-[#f3f3f3] flex flex-col py-4 px-2'>
+      <main id='main-section' className='  bg-[#f3f3f3] flex flex-col py-0 px-2 '>
         <img className='mx-auto h-[10%] my-2' src={xx} />
         <section className=' flex gap-3 justify-center flex-wrap'>
           {
-            data.map((d) => {
+            fetchedData && fetchedData.map((d) => {
               return (
                 <Card key={d.id} sx={{ maxWidth: 345, }}>
                   <CardMedia
-                    sx={{ height: 200 }}
+                    sx={{ height: 150 }}
                     image={yy}
                     title="green iguana"
                   />
-                  <CardContent>
+                  <CardContent sx={{
+                    gap: '5px'
+                  }}>
                     <Typography gutterBottom variant="h5" component="div">
-                      {d.title}
+                      {d.title} <br /> <span className='text-sm my-2 text-[#2181f8]'>FundBoost🚀Verified <VerifiedIcon /></span>
                     </Typography>
                     <Typography variant="body2" color="text.secondary">
-                     
-                    Owner : {d.owner }
+
+                      Owner : {d.owner}
                     </Typography>
                     <Typography variant="body2" color="text.secondary">
-                     
-                    Required Fund :  {d.amount }
-                    
+
+                      Required Fund :  {d.amount}
+
                     </Typography>
                     <Typography variant="body2" color="text.secondary">
-                     
-                     {d.content }
-                    
+
+                      Date Created :  {d.timeStamp}
+                      <br />
+
                     </Typography>
                   </CardContent>
                   <CardActions>
                     {/* <Button size="small">Share</Button> */}
-                    <Button size="medium" onClick={() => handleClick(d,open,handleOpen,handleClose)}>Learn More</Button>
+                    <Button size="medium" onClick={() => handleClick(d, open, handleOpen, handleClose)}>Learn More</Button>
 
                   </CardActions>
                 </Card>
