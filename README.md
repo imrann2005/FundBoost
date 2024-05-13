@@ -1,12 +1,26 @@
-# dapp-capitalRaising-crowdFunding
+# FundBoost : dapp-capitalRaising-crowdFunding
 
-The project has two main directories:d-app-client and server
+The project has three main directories:
+d-app-client 
+server
+contracts
+
 
 HomePage screenshot
-![alt text](image.png)
+![Home Page ](image.png)
 
 Projects Cards : 
-![alt text](image-1.png)
+![Project Listings](image-1.png)
 
 Create New Campaign Modal
-![alt text](image-2.png)
+![New Project/Campaign Start modal](image-2.png)
+#
+How to Start the Project 
+
+`git clone` the repository from [Github](https://github.com/imrann2005/dapp-capitalRaising-crowdFunding)
+
+Then navigate to `cd./d-app-client`
+
+And then run `npm install` to get necessary dependencies
+
+Finally run `npm run dev` to start the development server
