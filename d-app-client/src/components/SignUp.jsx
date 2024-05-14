@@ -5,7 +5,7 @@ import VisibilityIcon from '@mui/icons-material/Visibility';
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 import ReactPhoneInput from 'react-phone-input-2'
 import { TextField } from '@mui/material';
-import image from '../assets/Rectangle 1083.png'
+import image from '../assets/Rectangle 1083.png';
 import Button from '@mui/material/Button';
 import { IconButton, InputAdornment, Stepper, Step, StepLabel, Snackbar, Alert, MenuItem } from "@mui/material";
 import LoadingButton from '@mui/lab/LoadingButton';
@@ -301,23 +301,23 @@ const SignUp = () => {
                             }
                         }
 
-                        // const test = async () => {
+                        const test = async () => {
 
-                        //     try {
-                        //         console.log(formValues);
-                        //         const response = await axios.post("http://localhost:4000/signup", formValues, config);
-                        //         setSnackBarMessage(`Signup Successfull`);
-                        //         setSnackBarType("success");
-                        //         setSnackBarVisibility(true);
-                        //     }
-                        //     catch (e) {
-                        //         console.log(e);
-                        //         setSnackBarMessage(e.response.data.msg);
-                        //         setSnackBarType("error");
-                        //         setSnackBarVisibility(true);
-                        //     }
-                        // }
-                        // test();
+                            try {
+                                console.log(formValues);
+                                const response = await axios.post("http://localhost:4000/signup", formValues, config);
+                                setSnackBarMessage(response ? response.data.msg : 'Login Succes');
+                                setSnackBarType("success");
+                                setSnackBarVisibility(true);
+                            }
+                            catch (e) {
+                                console.log(e);
+                                setSnackBarMessage(e.response.data.msg);
+                                setSnackBarType("error");
+                                setSnackBarVisibility(true);
+                            }
+                        }
+                        test();
                     }
 
 
@@ -374,9 +374,6 @@ const SignUp = () => {
         const authFirebase = auth;
 
         const onSignInSubmit = () => {
-
-
-
 
             const appVerifier = window.recaptchaVerifier;
             const phoneNumber = `+${formValues.loginNumber}`;
@@ -477,16 +474,12 @@ const SignUp = () => {
 
                     recaptchaContainer.replaceChildren();
 
-
-
                     window.recaptchaVerifier = new RecaptchaVerifier(auth, recaptchaContainer, {
 
                         'size': 'normal',  // Use 'normal' size for a visible reCAPTCHA
                         'callback': (response) => {
                             // Callback function when reCAPTCHA is successfully solved
                             onSignInSubmit();
-
-
 
                         },
                         'expired-callback': () => {
@@ -548,8 +541,14 @@ const SignUp = () => {
         );
     };
     return (
+        <>
+        <div id='header' className=' poppins-bold text-md my-2 mx-8 text-[#2181f8]'>
+                FundBoost 🚀
+            </div>
         <div className="flex flex-row w-full h-full">
             {/* form container */}
+            
+           
             <div className="p-5 sm:p-16 sm:basis-1/2 flex-col ">
                 <h1 className="mx-auto text-2xl sm:text-3xl md:text-4xl lg:text-4xl mb-4 tracking-widest font-poppins">
                     {
@@ -592,6 +591,8 @@ const SignUp = () => {
                 <img src={image} className=" my-auto object-fit " alt="" />
             </div>
         </div>
+        
+        </>
     );
 
 

@@ -136,6 +136,8 @@ const Home = () => {
       setSnackBarVisibility(true);
     }
   };
+  //Dummy data created only for testing purposes
+
   const data = [
     {
       id: "01",

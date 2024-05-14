@@ -1,15 +1,18 @@
 import React, { useState } from 'react';
-import { Button } from '@mui/material/';
+import { Button,Alert } from '@mui/material/';
 import TextField from '@mui/material/TextField';
 import { Snackbar } from '@mui/base';
 import LoadingButton from "@mui/lab/LoadingButton";
 import { getAuth, signInWithEmailAndPassword } from 'firebase/auth';
 import loginVector from '../assets/LoginVector2.png';
+import {useNavigate} from 'react-router-dom';
 import axios from 'axios';
 
 import auth from '../Firebase/firebase-config';
 
 const Login = () => {
+
+    const navigate = useNavigate();
 
     const [snackbarMsg, setSnackBarMessage] = useState("Default Message");
     const [snackbarVisiblity, setSnackBarVisibility] = useState(false);
@@ -29,6 +32,13 @@ const Login = () => {
         })
     }
 
+    const customSnackBar = () => (
+        <Snackbar  open={snackbarVisiblity} autoHideDuration={6000} onClose={() => setSnackBarVisibility(false)}>
+          <Alert onClose={() => setSnackBarVisibility(false)} severity={snackbarType} sx={{ width: '100%' }}>
+            {snackbarMsg}
+          </Alert>
+        </Snackbar>
+      );
     const loginUser = async () => {
         console.log(loginData);
 
@@ -55,6 +65,7 @@ const Login = () => {
                 setSnackBarMessage(userCredential.data.msg);
                 setSnackBarType("success");
                 setSnackBarVisibility(true);
+                navigate('/home');
             } catch (error) {
                 console.log(error.code);
                 console.log(error.message);
@@ -68,19 +79,10 @@ const Login = () => {
 
     return (
         <>
-            <div id='header' className=' poppins-bold text-md my-4 mx-8'>
-                Company Logo
+            <div id='header' className=' poppins-bold text-md my-4 mx-8 text-[#2181f8]'>
+                FundBoost 🚀
             </div>
-            <div className='flex flex-col items-start justify-end fixed bottom-0 left-0 p-8'>
-                <Snackbar
-                    open={snackbarVisiblity}
-                    autoHideDuration={5000}
-                    onClose={() => setSnackBarVisibility(false)}
-                    className={`rounded-lg p-4 bg-${snackbarType}-500 text-stone-500 shadow-md`}
-                >
-                    {snackbarMsg}
-                </Snackbar>
-            </div>
+           
             <main className=' flex flex-row pl-8 pr-4 py-4 gap-4 items-center justify-evenly'>
                 <div className=' w-1/3 flex flex-col gap-4  mt-8 border-stone-500 '>
                     <p className=' poppins-regular text-[#21343F] mb-4 text-xl tracking-wide'>
@@ -89,7 +91,7 @@ const Login = () => {
                     <p className=' poppins-medium font-bold text-2xl mt-8 mb-4 '>
                         Let's <span className=' text-[#2C83EC] poppins-medium bg-gradient-to-r from-blue-600 via-green-500 to-indigo-400 inline-block text-transparent bg-clip-text'>Sign You In !</span>
                     </p>
-
+                    
                     <TextField
                         sx={{
                             width: '100%'
@@ -114,7 +116,7 @@ const Login = () => {
                         }}
 
                     />
-
+                    {customSnackBar()}
                     <LoadingButton className=' poppins-bold text-[#FFFFFF]' loading={isLoginLoading} type="submit" variant="contained" onClick={loginUser} disableElevation size="large" >
 
                         SIGN IN

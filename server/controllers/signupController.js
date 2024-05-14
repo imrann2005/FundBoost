@@ -10,10 +10,10 @@ const signupController = async (req, res) => {
     try {
         console.log(req.body);
 
-        const { email } = req.body;
+        const { emailAddress } = req.body;
         const { loginNumber } = req.body;
         // console.log(email);
-        const userEmail = await userModel.findOne({ email: email });
+        const userEmail = await userModel.findOne({ email: emailAddress });
         const userPhone = await userModel.findOne({ loginNumber: loginNumber });
         // console.log(user); 
         if (!userEmail && !userPhone) {
@@ -23,11 +23,11 @@ const signupController = async (req, res) => {
             await newUser.save();
             res.status(200).json({ msg: "user data saved succesfully" });
         }
-        else if (!userEmail) {
+        else if (userEmail) {
 
             res.status(409).json({ msg: "Email already in use, signin instead!", });
         }
-        else if (!userPhone) {
+        else if (userPhone) {
             res.status(409).json({ msg: "Phone number already in use,sign in instead" });
         }
 
