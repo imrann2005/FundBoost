@@ -14,10 +14,10 @@ export const deployedAddress = '0x1eC766dCFf8610b8CCae07cf818682cE7314EDFf';
 
 function NewCampaign({ open, children, onClose }) {
   const dialog = useRef();
-  //const [uploading, setUploading] = useState(false);
+  const [uploading, setUploading] = useState(false);
   const [loading, setIsLoading] = useState(false);
   //const [address, setAddress] = useState("");
-  const [imageUrl, setImageUrl] = useState("https://c8.alamy.com/comp/RNDTPT/fundraising-concept-colorful-flat-design-style-illustration-RNDTPT.jpg");
+  const [imageUrl, setImageUrl] = useState("");
   const { formValues, updateFormValue } = useFormContext();
   const [snackBarVisibility, setSnackBarVisibility] = useState(false);
   const [snackBarMessage, setSnackBarMessage] = useState("Test Message");
@@ -37,7 +37,7 @@ function NewCampaign({ open, children, onClose }) {
   }
 
   const customSnackBar = () => (
-    <Snackbar  anchorOrigin={{vertical : 'top',horizontal : 'center'}} open={snackBarVisibility} autoHideDuration={6000} onClose={() => setSnackBarVisibility(false)}>
+    <Snackbar anchorOrigin={{ vertical: 'top', horizontal: 'center' }} open={snackBarVisibility} autoHideDuration={6000} onClose={() => setSnackBarVisibility(false)}>
       <Alert onClose={() => setSnackBarVisibility(false)} severity={snackBarType} sx={{ width: '100%' }}>
         {snackBarMessage}
       </Alert>
@@ -46,30 +46,40 @@ function NewCampaign({ open, children, onClose }) {
 
   const uploadFiles = async (e) => {
 
-    const auth = 'Basic ' + Buffer.from(projectId + ':' + projectSecret).toString('base64');
+    if (imageUrl == "") {
+      setSnackBarVisibility(true);
+      setSnackBarType('warning');
+      setSnackBarMessage("Please Upload Image..");
 
-    const client = IPFSHTTPClient({
-      host: 'ipfs.infura.io',
-      port: 5001,
-      protocol: 'https',
-      // apiPath: '/api/v0',
-      headers: {
-        authorization: auth
-      }
-    })
-    e.preventDefault();
-    setIsLoading(true);
+    }
+    else {
+      setUploading(true);
+      setSnackBarVisibility(true);
+      setSnackBarType('info');
+      setSnackBarMessage("Uploading Images Please Wait..");
+      const data = new FormData();
+      data.append("file", imageUrl);
+      data.append("upload_preset", "FundBoost");
+      data.append("cloud_name", "dcj9pgihw");
 
-    if (formValues.story) {
-      try {
-        const added = await client.add(formValues.story);
-        //setStoryUrl(added.path);
-        console.log(added.path);
-        setIsLoading(false);
-      } catch (error) {
-        setIsLoading(false);
-        console.log(error);
-      }
+      fetch("https://api.cloudinary.com/v1_1/demo/image/upload", {
+        method: 'POST',
+        body: data,
+      })
+        .then(res => res.json())
+        .then(data => {
+          setImageUrl(data);
+          setSnackBarVisibility(true);
+          setSnackBarType('success');
+          setSnackBarMessage("Image Uploaded Sucessfully..");
+        })
+        .catch((e) => {
+          console.log(e);
+          setSnackBarVisibility(true);
+          setSnackBarType('error');
+          setSnackBarMessage("Error Uploading Images..")
+          setUploading(false);
+        })
     }
   }
 
@@ -124,7 +134,7 @@ function NewCampaign({ open, children, onClose }) {
   }
   return createPortal(
     <dialog className="modalC h-[100vh] mx-auto my-auto w-[50%] backdrop:opacity-1 px-3 py-3" ref={dialog} onClose={onClose}>
-    {customSnackBar()}
+      {customSnackBar()}
       {open ? <div className=' flex flex-col basis-1/2 gap-4 w-[80%] mx-auto'>
         <div className='flex justify-between'><p className='poppins-regular text-lg my-4 mx-3'><span className=' text-[#2181F8]'>Start</span> Fundraising</p>
           <button className='hover:text-[#2181f8]' onClick={onClose}>Cancel</button>
@@ -168,10 +178,10 @@ function NewCampaign({ open, children, onClose }) {
 
         />
         <label className='text-sm'>Upload a suitable Image</label>
-        <input type='file' accept='image/*' />
+        <input type='file' accept='image/*' onChange={(e) => setImageUrl(e.target.files[0])} />
 
         <div className=' flex justify-evenly'>
-          <LoadingButton loading={loading} onClick={uploadFiles} variant='outined' size='large' sx={{
+          <LoadingButton loading={uploading} onClick={uploadFiles} variant='outined' size='large' sx={{
             color: "#2181f8"
           }}>
             Upload Images To IPFS
