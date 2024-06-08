@@ -7,6 +7,7 @@ import { FormProvider } from './components/contexts/FormContext';
 import { Routes, Route } from "react-router-dom";
 import Home from './components/Home';
 import CampaignDetaiils from './components/CampaignDetaiils';
+import UserProfile from './components/UserProfile';
 function App() {
 
   // const [swi,setSwi] = useState(false);
@@ -15,15 +16,15 @@ function App() {
 
   return (
     <FormProvider>
-    <Routes>
-       <Route path='/' element={ <SignUp/> } />
-       <Route path='/login' element={ <Login/> } />
-       <Route path='/home' element={ <Home/> } />
-        <Route path='/home/campaign/:id' element={<CampaignDetaiils />}/>
-     
-    </Routes>
-  </FormProvider>
-   
+      <Routes>
+        <Route path='/' element={<SignUp />} />
+        <Route path='/login' element={<Login />} />
+        <Route path='/home' element={<Home />} />
+        <Route path='/home/campaign/:id' element={<CampaignDetaiils />} />
+        <Route path='/userprofile' element={<UserProfile />} />
+      </Routes>
+    </FormProvider>
+
   )
 }
 

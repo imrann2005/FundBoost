@@ -133,7 +133,7 @@ function NewCampaign({ open, children, onClose }) {
     }
   }
   return createPortal(
-    <dialog className="modalC h-[100vh] mx-auto my-auto w-[50%] backdrop:opacity-1 px-3 py-3" ref={dialog} onClose={onClose}>
+    <dialog className="modalC h-[100vh] mx-auto my-auto w-[50%] opacity-95 backdrop:opacity-10 px-3 py-3" ref={dialog} onClose={onClose}>
       {customSnackBar()}
       {open ? <div className=' flex flex-col basis-1/2 gap-4 w-[80%] mx-auto'>
         <div className='flex justify-between'><p className='poppins-regular text-lg my-4 mx-3'><span className=' text-[#2181F8]'>Start</span> Fundraising</p>

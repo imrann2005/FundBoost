@@ -49,8 +49,6 @@ const Home = () => {
   //  }
   //  main();
 
-  
-
   useEffect(() => {
 
     const fetchData = async () => {
